@@ -1,12 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut, getSession } from 'next-auth/react';
 const page = () => {
   const { data: session } = useSession();
+  const HandleSignOut = () => {
+    signOut();
+  };
   return (
     <div>
-      <>{session ? user({ session }) : Guest()}</>
+      <>{session ? user({ session, HandleSignOut }) : Guest()}</>
     </div>
   );
 };
@@ -32,7 +35,24 @@ function Guest() {
   );
 }
 
-function user({ session }) {
+export async function getServerSideProps({ req }) {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+
+function user({ session, HandleSignOut }) {
   return (
     <main
       className="container mx-auto text-center bg-green-600 py-20
@@ -47,7 +67,10 @@ function user({ session }) {
       </div>
 
       <div className="flex justify-center">
-        <button className="mt-5 px-10 py-1 rounded-sm  bg-gray-50">
+        <button
+          onClick={HandleSignOut}
+          className="mt-5 px-10 py-1 rounded-sm  bg-gray-50"
+        >
           Sign Out
         </button>
       </div>

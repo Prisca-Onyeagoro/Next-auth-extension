@@ -11,9 +11,13 @@ export const metadata = {
   title: 'Login Page',
   description: 'Tutorial on next-auth',
 };
-
+// handle google signIn
 const HandleGoogleLogin = async () => {
   signIn('google', { callbackUrl: 'http://localhost:3000' });
+};
+// handle github signIn
+const HandleGithubLogin = async () => {
+  signIn('github', { callbackUrl: 'http://localhost:3000' });
 };
 
 export default function Login() {
@@ -71,7 +75,11 @@ export default function Login() {
               </button>
             </div>
             <div className="input-button">
-              <button type="button" className={styles.button_custom}>
+              <button
+                type="button"
+                className={styles.button_custom}
+                onClick={HandleGithubLogin}
+              >
                 Sign in with Github
                 <Image src={'/assets/github.svg'} width={25} height={25} />
               </button>
