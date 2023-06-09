@@ -6,23 +6,34 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { HiAtSymbol, HiFingerPrint } from 'react-icons/hi';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { useFormik } from 'formik';
 
 export const metadata = {
   title: 'Login Page',
   description: 'Tutorial on next-auth',
 };
-// handle google signIn
-const HandleGoogleLogin = async () => {
-  signIn('google', { callbackUrl: 'http://localhost:3000' });
-};
-// handle github signIn
-const HandleGithubLogin = async () => {
-  signIn('github', { callbackUrl: 'http://localhost:3000' });
-};
 
 export default function Login() {
   const [show, setShow] = useState(false);
-
+  // formik handler for forms
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit,
+  });
+  async function onSubmit(values) {
+    console.log(values);
+  }
+  // handle google signIn
+  const HandleGoogleLogin = async () => {
+    signIn('google', { callbackUrl: 'http://localhost:3000' });
+  };
+  // handle github signIn
+  const HandleGithubLogin = async () => {
+    signIn('github', { callbackUrl: 'http://localhost:3000' });
+  };
   return (
     <>
       <Layout>
@@ -33,13 +44,14 @@ export default function Login() {
               A town hall different from bala blu, blue blu bulaba.
             </p>
           </div>
-          <form className="flex flex-col gap-5">
+          <form className="flex flex-col gap-5" onSubmit={formik.handleSubmit}>
             <div className={styles.input_group}>
               <input
                 type="email"
                 name="email"
                 placeholder="email"
                 className={styles.input_text}
+                {...formik.getFieldProps('email')}
               />
               <span className="icon flex items-center px-4">
                 <HiAtSymbol size={25} />
@@ -51,6 +63,7 @@ export default function Login() {
                 name="password"
                 placeholder="password"
                 className={styles.input_text}
+                {...formik.getFieldProps('password')}
               />
               <span
                 className="icon flex items-center px-4"
