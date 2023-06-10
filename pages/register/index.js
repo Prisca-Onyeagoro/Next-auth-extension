@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { HiAtSymbol, HiFingerPrint, HiOutlineUser } from 'react-icons/hi';
 import { useFormik } from 'formik';
+import RegisterValidate from '@/validate/RegisterValidate';
 export const metadata = {
   title: 'Register Page',
   description: 'Tutorial on next-auth',
@@ -19,6 +20,7 @@ export default function Register() {
       password: '',
       cpassword: '',
     },
+    validate: RegisterValidate,
     onSubmit,
   });
   async function onSubmit(values) {
@@ -46,6 +48,11 @@ export default function Register() {
               <HiOutlineUser size={25} />
             </span>
           </div>
+          {formik.errors.username && formik.touched.username ? (
+            <span className="bg-red-700">{formik.errors.username}</span>
+          ) : (
+            <span></span>
+          )}
           <div className={styles.input_group}>
             <input
               type="email"
@@ -58,6 +65,12 @@ export default function Register() {
               <HiAtSymbol size={25} />
             </span>
           </div>
+          {formik.errors.email && formik.touched.email ? (
+            <span className="bg-red-700">{formik.errors.email}</span>
+          ) : (
+            <span></span>
+          )}
+
           <div className={styles.input_group}>
             <input
               type={`${show.password ? 'text' : 'password'}`}
@@ -73,6 +86,12 @@ export default function Register() {
               <HiFingerPrint size={25} />
             </span>
           </div>
+          {formik.errors.password && formik.touched.password ? (
+            <span className="bg-red-700">{formik.errors.password}</span>
+          ) : (
+            <span></span>
+          )}
+
           <div className={styles.input_group}>
             <input
               type={`${show.cpassword ? 'text' : 'password'}`}
@@ -88,6 +107,12 @@ export default function Register() {
               <HiFingerPrint size={25} />
             </span>
           </div>
+          {formik.errors.cpassword && formik.touched.cpassword ? (
+            <span className="bg-red-700">{formik.errors.cpassword}</span>
+          ) : (
+            <span></span>
+          )}
+
           <div className="input-button">
             <button type="submit" className={styles.button}>
               Sign Up

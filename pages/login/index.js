@@ -59,8 +59,10 @@ export default function Login() {
                 <HiAtSymbol size={25} />
               </span>
             </div>
-            {formik.errors.email & formik.touched.email ? (
-              <span>{formik.errors.email}</span>
+            {formik.errors.email && formik.touched.email ? (
+              <span className="bg-red-800 text-white ">
+                {formik.errors.email}
+              </span>
             ) : (
               <span></span>
             )}
@@ -79,8 +81,10 @@ export default function Login() {
                 <HiFingerPrint size={25} />
               </span>
             </div>
-            {formik.errors.password & formik.touched.password ? (
-              <span>{formik.errors.password}</span>
+            {formik.errors.password && formik.touched.password ? (
+              <span className="bg-red-800 text-white ">
+                {formik.errors.password}
+              </span>
             ) : (
               <span></span>
             )}
