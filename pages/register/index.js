@@ -1,16 +1,29 @@
 'use client';
-import Layouts from '@/Layouts/layouts';
+import Layouts from '@/Layout/Layout';
 import styles from '@/styles/form.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { HiAtSymbol, HiFingerPrint, HiOutlineUser } from 'react-icons/hi';
+import { useFormik } from 'formik';
 export const metadata = {
   title: 'Register Page',
   description: 'Tutorial on next-auth',
 };
 export default function Register() {
   const [show, setShow] = useState({ password: false, cpassword: false });
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+      cpassword: '',
+    },
+    onSubmit,
+  });
+  async function onSubmit(values) {
+    console.log(values);
+  }
   return (
     <Layouts>
       <section className="w-3/4 mx-auto  flex flex-col gap-10">
@@ -20,13 +33,14 @@ export default function Register() {
             A town hall different from bala blu, blue blu bulaba. broom broom
           </p>
         </div>
-        <form className="flex flex-col gap-5">
+        <form className="flex flex-col gap-5" onSubmit={formik.handleSubmit}>
           <div className={styles.input_group}>
             <input
               type="username"
               name="username"
               placeholder="username"
               className={styles.input_text}
+              {...formik.getFieldProps('username')}
             />
             <span className="icon flex items-center px-4">
               <HiOutlineUser size={25} />
@@ -38,6 +52,7 @@ export default function Register() {
               name="email"
               placeholder="email"
               className={styles.input_text}
+              {...formik.getFieldProps('email')}
             />
             <span className="icon flex items-center px-4">
               <HiAtSymbol size={25} />
@@ -49,6 +64,7 @@ export default function Register() {
               name="password"
               placeholder="password"
               className={styles.input_text}
+              {...formik.getFieldProps('password')}
             />
             <span
               className="icon flex items-center px-4"
@@ -63,6 +79,7 @@ export default function Register() {
               name="cpassword"
               placeholder="confirm password"
               className={styles.input_text}
+              {...formik.getFieldProps('cpassword')}
             />
             <span
               className="icon flex items-center px-4"
@@ -73,7 +90,7 @@ export default function Register() {
           </div>
           <div className="input-button">
             <button type="submit" className={styles.button}>
-              Register
+              Sign Up
             </button>
           </div>
         </form>
