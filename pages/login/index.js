@@ -8,6 +8,10 @@ import { HiAtSymbol, HiFingerPrint } from 'react-icons/hi';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useFormik } from 'formik';
 import LoginValidate from '@/validate/LoginValidate';
+import { useRouter } from 'next/router';
+
+// import LoginError from '@/pages/LoginError';
+// import { redirect } from 'next/dist/server/api-utils';
 
 export const metadata = {
   title: 'Login Page',
@@ -16,6 +20,8 @@ export const metadata = {
 
 export default function Login() {
   const [show, setShow] = useState(false);
+  const Router = useRouter();
+
   // formik handler for forms
   const formik = useFormik({
     initialValues: {
@@ -25,9 +31,27 @@ export default function Login() {
     validate: LoginValidate,
     onSubmit,
   });
+
   async function onSubmit(values) {
-    console.log(values);
+    const status = await signIn('credentials', {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      callbackUrl: '/',
+    });
+    // if the login us successful
+    if (status.ok) Router.push(status.url);
+    // if theres an error while trying to login
+    if (status.error !== null) {
+      const error = status.error;
+      DisplayErrorMessage(error);
+    }
   }
+  const DisplayErrorMessage = (error) => {
+    const ErrorElement = document.getElementById('error');
+    ErrorElement.textContent = error;
+  };
+
   // handle google signIn
   const HandleGoogleLogin = async () => {
     signIn('google', { callbackUrl: 'http://localhost:3000' });
@@ -36,6 +60,7 @@ export default function Login() {
   const HandleGithubLogin = async () => {
     signIn('github', { callbackUrl: 'http://localhost:3000' });
   };
+
   return (
     <>
       <Layout>
@@ -45,7 +70,10 @@ export default function Login() {
             <p className="w-3/4 mx-auto text-gray-400">
               A town hall different from bala blu, blue blu bulaba.
             </p>
+            {/* ERROR MESSAGE */}
+            <div id="error" className="bg-rose-800 text-slate-300"></div>
           </div>
+
           <form className="flex flex-col gap-5" onSubmit={formik.handleSubmit}>
             <div className={styles.input_group}>
               <input

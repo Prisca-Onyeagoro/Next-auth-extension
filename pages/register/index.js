@@ -7,12 +7,21 @@ import { useState } from 'react';
 import { HiAtSymbol, HiFingerPrint, HiOutlineUser } from 'react-icons/hi';
 import { useFormik } from 'formik';
 import RegisterValidate from '@/validate/RegisterValidate';
+import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
+import Login from '../login';
+import Loader from '@/Components/loader';
+
 export const metadata = {
   title: 'Register Page',
   description: 'Tutorial on next-auth',
 };
 export default function Register() {
   const [show, setShow] = useState({ password: false, cpassword: false });
+  const [reveal, setReveal] = useState(false);
+  const [loading, isloading] = useState(false);
+
+  const Router = useRouter();
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -23,9 +32,47 @@ export default function Register() {
     validate: RegisterValidate,
     onSubmit,
   });
+  // storing the user details as an object in the options variable with a post method
   async function onSubmit(values) {
-    console.log(values);
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    };
+
+    // register user details, sending the user details to the fetch route
+    const res = await fetch('http://localhost:3000/api/auth/signup', options)
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          setReveal(true);
+          return response.json().then((data) => {
+            const errorMessage = data.message;
+            DisplayErrorMessage(errorMessage);
+            console.log(errorMessage);
+          });
+        } else {
+          Router.push('http://localhost:3000');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    console.log(res);
   }
+  function DisplayErrorMessage(errorMessage) {
+    const error = document.getElementById('error');
+    error.textContent = errorMessage;
+  }
+
+  Router.events.on('routeChangeStart', (url) => {
+    console.log('route is changing');
+    isloading(true);
+  });
+  Router.events.on('routeChangeComplete', (url) => {
+    console.log('route is completed');
+    isloading(false);
+  });
   return (
     <Layouts>
       <section className="w-3/4 mx-auto  flex flex-col gap-10">
@@ -35,6 +82,9 @@ export default function Register() {
             A town hall different from bala blu, blue blu bulaba. broom broom
           </p>
         </div>
+        <div id="error" className="bg-rose-500 text-slate-300"></div>
+        {loading && <Loader />}
+
         <form className="flex flex-col gap-5" onSubmit={formik.handleSubmit}>
           <div className={styles.input_group}>
             <input
