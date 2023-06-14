@@ -41,7 +41,7 @@ export default function Login() {
     });
     // if the login us successful
     if (status.ok) Router.push(status.url);
-    // if theres an error while trying to login
+    // if there is an error while trying to login
     if (status.error !== null) {
       const error = status.error;
       DisplayErrorMessage(error);
@@ -56,7 +56,7 @@ export default function Login() {
   const HandleGoogleLogin = async () => {
     signIn('google', { callbackUrl: 'http://localhost:3000' });
   };
-  // handle github signIn
+  // handle GITHUB signIn
   const HandleGithubLogin = async () => {
     signIn('github', { callbackUrl: 'http://localhost:3000' });
   };
